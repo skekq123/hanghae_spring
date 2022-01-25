@@ -1,13 +1,29 @@
 package com.hanghae.myblog.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.hanghae.myblog.domain.Board;
+import com.hanghae.myblog.domain.BoardRepository;
+import com.hanghae.myblog.domain.BoardRequestDto;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class BoardController {
+    private final BoardRepository boardRepository;
 
     @GetMapping("myblog/boards")
-    public String getBoards() {
-        return "main";
+    public List<Board> getBoards() {
+        return boardRepository.findAllByOrderByModifiedAtDesc();
+    }
+
+    @PostMapping("myblog/boards")
+    public Board createBoard(@RequestBody BoardRequestDto requestDto) {
+        Board board = new Board(requestDto);
+        return boardRepository.save(board);
     }
 }
